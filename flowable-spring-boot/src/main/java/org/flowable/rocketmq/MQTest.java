@@ -14,7 +14,22 @@ public class MQTest {
 			producter.init();
 			TaskProperties taskProperties = new TaskProperties("123", 
 					"12301", new Date().toString(), "期刊", "0001", "录入");
-			producter.sendMessage(taskProperties);
+			//producter.sendMessage(taskProperties);
+			producter.sendMessage(taskProperties, "activityTopic", "tag1");
+			producter.distroy();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void product1(){
+		MQProducter producter = new MQProducter();
+		try {
+			producter.init();
+			TaskProperties taskProperties = new TaskProperties("123", 
+					"12301", new Date().toString(), "期刊", "0001", "录入");
+			//producter.sendMessage(taskProperties);
+			producter.sendMessage(taskProperties, "activityTopic", "tag2");
 			producter.distroy();
 		} catch (Exception e) {
 			e.printStackTrace();
