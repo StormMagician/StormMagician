@@ -5,13 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.FlowNode;
+import org.flowable.bpmn.model.SequenceFlow;
+import org.flowable.engine.ProcessEngine;
+import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.rocketmq.TaskProperties;
 import org.flowable.task.api.Task;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,14 +28,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Transactional
 public class MyService {
 
+	@Autowired
+	private ProcessEngine engine;
+	
     @Autowired
     private RuntimeService runtimeService;
 
     @Autowired
-    private TaskService taskService;
-
+    private RepositoryService repositoryService;
+    
     @Autowired
-    private PersonRepository personRepository;
+    private TaskService taskService;
 
     public void startProcess(String startMessage) {
 
@@ -37,17 +48,20 @@ public class MyService {
         
         System.out.println("pid:" + pi.getId());
     }
+    
+    public void tSub(String taskId) {
+    	
+    	taskService.complete(taskId);
+//    	System.out.println(taskService.createTaskQuery().taskId(taskId).singleResult());
+    }
 
     public List<Task> getTasks(String assignee) {
 //        return taskService.createTaskQuery().taskAssignee(assignee).list();
         return taskService.createTaskQuery().list();
     }
 
-    public void createDemoUsers() {
-        if (personRepository.findAll().size() == 0) {
-            personRepository.save(new Person("jbarrez", "Joram", "Barrez", new Date()));
-            personRepository.save(new Person("trademakers", "Tijs", "Rademakers", new Date()));
-        }
+    public void setAssignee(TaskProperties taskProperties) {
+    	taskService.setAssignee(taskProperties.getTaskID(), taskProperties.getArticleID());
     }
     
 }
