@@ -3,6 +3,7 @@ package org.flowable.rocketmq;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
@@ -17,6 +18,7 @@ public class MessageListener implements MessageListenerConcurrently {
 					String msg =  new String(messageExt.getBody());
 					TaskProperties taskProperties = JsonToBean(msg);
 					logger.info("监听到消息："+taskProperties.toString());
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
